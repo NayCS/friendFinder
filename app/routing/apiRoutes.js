@@ -39,15 +39,36 @@ module.exports = function (app) {
         friends.push(req.body);
         res.json(true);
 
-    });
 
-    // ---------------------------------------------------------------------------
-    // I added this below code so you could clear out the table while working with the functionality.
-    // Don"t worry about it!
+        var bestMatch = {
+            name: "",
+            photo: "",
+            friendDifference: Infinity
+        }
+        var userData = req.body;
 
-    app.post("/api/clear", function (req, res) {
-        // Empty out the arrays of data
-        friends.length = 0;
-        res.json({ ok: true });
+        var userScores = userData.scores;
+
+        var totalDifference;
+
+
+        for (var i = 0; i < friends.length; i++) {
+            var currentFriend = friends[i];
+            var totalDifference = 0
+            for (var j = 0; j < currentFriend.scores.length; j++) {
+                var currentFriendScore = currentFriend.scores[j];
+                var currentUserScore = userScore[j];
+                totalDifference = totalDifference + Math.abs(parseInt(currentUserScore));
+            }
+            if (totalDifference <= bestMatch.friendDifference) {
+                bestMatch.name = currentFriend.name;
+                bestMatch.photo = currentFriend.photo;
+                bestMatch.friendDifference = totalDifference;
+
+            }
+        }
+        friends.push(userData)
+        res.json(bestMatch)
+
     });
 };
